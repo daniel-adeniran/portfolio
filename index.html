@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Engineer Portfolio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --surface2:  #1c2128;
+      --border:    #21262d;
+      --teal:      #2dd4bf;
+      --teal-dim:  #0e7490;
+      --text:      #e6edf3;
+      --muted:     #8b949e;
+      --code-bg:   #0d1117;
+      --tag-bg:    #1c2a3a;
+      --tag-text:  #58a6ff;
+      --why-bg:    #0e2a26;
+      --why-border:#14b8a6;
+      --green:     #4ade80;
+      --green-bg:  #0d2a1a;
+      --amber:     #fbbf24;
+      --radius:    8px;
+      --font-mono: "Courier New", Courier, monospace;
+      --edit-glow: rgba(251,191,36,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ── Edit mode body state ── */
+    body.edit-mode [contenteditable] {
+      outline: 1px dashed var(--amber);
+      border-radius: 3px;
+      padding: 1px 3px;
+      background: var(--edit-glow);
+      cursor: text;
+    }
+    body.edit-mode [contenteditable]:focus {
+      outline: 1px solid var(--amber);
+      background: rgba(251,191,36,0.08);
+    }
+
+    /* ── Edit mode banner ── */
+    #edit-banner {
+      display: none;
+      background: linear-gradient(90deg, #2a1f00, #1a1500);
+      border-bottom: 1px solid var(--amber);
+      padding: 0.5rem 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--amber);
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+    body.edit-mode #edit-banner { display: block; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 17, 23, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .nav-brand {
+      font-family: var(--font-mono);
+      color: var(--teal);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+
+    /* Edit toggle button */
+    #edit-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.04em;
+    }
+    #edit-toggle:hover { border-color: var(--amber); color: var(--amber); }
+    body.edit-mode #edit-toggle {
+      border-color: var(--amber);
+      color: var(--amber);
+      background: var(--edit-glow);
+    }
+    .edit-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.2s;
+    }
+    body.edit-mode .edit-dot { background: var(--amber); }
+
+    /* ── Sections ── */
+    section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+
+    h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    h2::before {
+      content: "";
+      display: block;
+      width: 4px;
+      height: 1.5rem;
+      background: var(--teal);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: calc(100vh - 56px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero-pre {
+      font-family: var(--font-mono);
+      color: var(--teal);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.08em;
+    }
+    .hero-name {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .hero-tagline {
+      font-family: var(--font-mono);
+      color: var(--muted);
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      margin-bottom: 2rem;
+    }
+    .hero-tagline span { color: var(--teal); }
+    .hero-desc {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary { background: var(--teal); color: #0d1117; }
+    .btn-primary:hover { background: #5eead4; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+    .hero-blink {
+      display: inline-block;
+      width: 3px; height: 1.1em;
+      background: var(--teal);
+      vertical-align: text-bottom;
+      margin-left: 2px;
+      animation: blink 1.1s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── Projects ── */
+    .projects-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .projects-header h2 { margin-bottom: 0; }
+
+    #add-card-btn {
+      display: none;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius);
+      border: 1px dashed var(--teal-dim);
+      background: transparent;
+      color: var(--teal);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #add-card-btn:hover { background: rgba(45,212,191,0.06); border-color: var(--teal); }
+    body.edit-mode #add-card-btn { display: flex; }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .card:hover { border-color: var(--teal-dim); transform: translateY(-2px); }
+    .card.placeholder { border-style: dashed; opacity: 0.5; }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .card-desc {
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.2rem;
+    }
+    .tag {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+    }
+    /* tag editing */
+    .card-tags-input {
+      display: none;
+      width: 100%;
+      background: var(--code-bg);
+      border: 1px dashed var(--amber);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0.4rem 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+    body.edit-mode .card-tags { display: none; }
+    body.edit-mode .card-tags-input { display: block; }
+
+    .card-link-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    .card-link {
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: gap 0.2s;
+    }
+    .card-link:hover { gap: 0.6rem; }
+    .card-url-input {
+      display: none;
+      flex: 1;
+      background: var(--code-bg);
+      border: 1px dashed var(--amber);
+      border-radius: 4px;
+      color: var(--teal);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0.35rem 0.6rem;
+    }
+    body.edit-mode .card-link { display: none; }
+    body.edit-mode .card-url-input { display: block; }
+
+    /* Delete card button */
+    .card-delete {
+      display: none;
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      background: rgba(248,81,73,0.1);
+      border: 1px solid rgba(248,81,73,0.3);
+      color: #f85149;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: all 0.2s;
+    }
+    .card-delete:hover { background: rgba(248,81,73,0.2); }
+    body.edit-mode .card-delete { display: block; }
+
+    /* ── Tech Stack ── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .stack-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .stack-group-title {
+      font-family: var(--font-mono);
+      color: var(--teal);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .stack-group-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .stack-items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .stack-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.82rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+
+    /* ── GCP Guide ── */
+    #guide { border-top: 1px solid var(--border); }
+
+    /* Progress bar */
+    .guide-progress-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.4rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .progress-label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .progress-label strong {
+      color: var(--teal);
+    }
+    .progress-bar-track {
+      flex: 1;
+      min-width: 120px;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal-dim), var(--teal));
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    .progress-complete-badge {
+      display: none;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--green);
+      background: var(--green-bg);
+      border: 1px solid rgba(74,222,128,0.3);
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+    }
+    .progress-complete-badge.visible { display: block; }
+
+    .guide-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .terminal-badge {
+      font-family: var(--font-mono);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--teal);
+      font-size: 0.78rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 4px;
+    }
+
+    .accordion { display: flex; flex-direction: column; gap: 0.75rem; }
+    .accordion-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .accordion-item.open { border-color: var(--teal-dim); }
+    .accordion-item.step-done { border-color: rgba(74,222,128,0.3); }
+    .accordion-item.step-done.open { border-color: var(--green); }
+
+    .accordion-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 1.1rem 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      text-align: left;
+      color: var(--text);
+    }
+    .accordion-btn:hover { background: rgba(45, 212, 191, 0.04); }
+    .step-num {
+      font-family: var(--font-mono);
+      color: var(--teal);
+      font-size: 0.75rem;
+      background: rgba(45, 212, 191, 0.08);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .accordion-item.step-done .step-num {
+      color: var(--green);
+      background: var(--green-bg);
+      border-color: rgba(74,222,128,0.3);
+    }
+    .step-title { font-size: 0.97rem; font-weight: 600; flex: 1; }
+    .step-done-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--green);
+      background: var(--green-bg);
+      border: 1px solid rgba(74,222,128,0.25);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .accordion-item.step-done .step-done-badge { opacity: 1; }
+    .chevron {
+      color: var(--muted);
+      font-size: 0.75rem;
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .accordion-item.open .chevron { transform: rotate(90deg); }
+
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 1.4rem;
+      border-top: 0px solid var(--border);
+      transition: max-height 0.35s ease, padding 0.25s ease, border-top-width 0.25s ease;
+    }
+    .accordion-item.open .accordion-body {
+      display: block;
+      max-height: 2000px;
+      padding: 0 1.4rem 1.4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .step-plain {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-top: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .step-plain strong { color: var(--text); }
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.83em;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    .code-block-wrap { position: relative; margin-bottom: 1.25rem; }
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      padding-right: 5rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #e6edf3;
+    }
+    .code-block .comment { color: #6e7681; }
+    .code-block .cmd { color: var(--teal); }
+    .code-block .flag { color: #58a6ff; }
+    .code-block .str { color: #a5d6ff; }
+    .copy-btn {
+      position: absolute;
+      top: 0.6rem; right: 0.6rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+    .why-callout {
+      background: var(--why-bg);
+      border-left: 3px solid var(--why-border);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.875rem;
+      color: #99f6e4;
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+    }
+    .why-callout strong {
+      display: block;
+      font-family: var(--font-mono);
+      color: var(--teal);
+      font-size: 0.78rem;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* Step actions bar */
+    .step-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1.25rem;
+      padding-top: 1.1rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    /* Notes textarea */
+    .step-notes-wrap { flex: 1; min-width: 200px; }
+    .step-notes-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+    .step-notes {
+      width: 100%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 0.55rem 0.75rem;
+      resize: vertical;
+      min-height: 54px;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+    }
+    .step-notes:focus {
+      outline: none;
+      border-color: var(--teal-dim);
+    }
+    .step-notes::placeholder { color: #404850; }
+
+    /* Mark complete button */
+    .mark-complete-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .mark-complete-btn:hover {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-bg);
+    }
+    .mark-complete-btn.done {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-bg);
+    }
+    .check-icon { font-size: 0.85rem; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-brand {
+      font-family: var(--font-mono);
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+    .footer-brand span { color: var(--teal); }
+    .footer-links { display: flex; gap: 1.25rem; }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--teal); }
+
+    /* ── Save indicator ── */
+    #save-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--teal-dim);
+      color: var(--teal);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: all 0.25s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    #save-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-links { gap: 1rem; }
+      section { padding: 3.5rem 1.25rem; }
+      #hero { min-height: auto; padding: 3rem 1.25rem; }
+      footer { padding: 2rem 1.25rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="edit-banner">&#9998; &nbsp;EDIT MODE ACTIVE — click any highlighted text to edit. Changes are saved automatically.</div>
+<div id="save-toast">&#10003; Saved</div>
+
+<!-- ── Navigation ── -->
+<nav>
+  <span class="nav-brand">&#47;&#47; data-eng</span>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#stack">Stack</a>
+      <a href="#guide">GCP Guide</a>
+    </div>
+    <button id="edit-toggle" onclick="toggleEditMode()">
+      <span class="edit-dot"></span>
+      <span id="edit-label">Edit Mode</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section id="hero">
+  <p class="hero-pre">&#36; whoami</p>
+  <h1 class="hero-name" contenteditable="false" data-key="hero-name">Daniel Adeniran<span class="hero-blink"></span></h1>
+  <p class="hero-tagline" contenteditable="false" data-key="hero-tagline">Data Engineer | Building on <span>GCP</span></p>
+  <p class="hero-desc" contenteditable="false" data-key="hero-desc">
+    I design and build data pipelines, analytics systems, and cloud-native applications
+    that turn raw data into decisions. Focused on scalable infrastructure on Google
+    Cloud Platform.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Projects ↓</a>
+    <a href="#guide" class="btn btn-outline">GCP Setup Guide</a>
+  </div>
+</section>
+
+<!-- ── Projects ── -->
+<section id="projects">
+  <div class="projects-header">
+    <h2>Projects</h2>
+    <button id="add-card-btn" onclick="addProjectCard()">&#43; Add Project</button>
+  </div>
+  <div class="projects-grid" id="projects-grid">
+
+    <div class="card" data-id="card-1">
+      <button class="card-delete" onclick="deleteCard('card-1')">&#215; Remove</button>
+      <p class="card-title" contenteditable="false" data-key="card-1-title">Python App — Cloud Run</p>
+      <p class="card-desc" contenteditable="false" data-key="card-1-desc">
+        A containerised Python service deployed to Google Cloud Run with zero
+        cold-start overhead. Auto-scales to zero when idle, keeping it within
+        the free tier for low-traffic workloads.
+      </p>
+      <div class="card-tags">
+        <span class="tag">Python</span>
+        <span class="tag">Docker</span>
+        <span class="tag">Cloud Run</span>
+        <span class="tag">Artifact Registry</span>
+      </div>
+      <input class="card-tags-input" type="text" placeholder="Tags (comma-separated): Python, Docker, GCP" data-key="card-1-tags" value="Python, Docker, Cloud Run, Artifact Registry" />
+      <div class="card-link-wrap">
+        <a href="#" class="card-link" data-key="card-1-url">View Project →</a>
+        <input class="card-url-input" type="text" placeholder="https://your-live-url.run.app" data-key="card-1-url-input" />
+      </div>
+    </div>
+
+    <div class="card placeholder" data-id="card-2">
+      <button class="card-delete" onclick="deleteCard('card-2')">&#215; Remove</button>
+      <p class="card-title" contenteditable="false" data-key="card-2-title">Next Project</p>
+      <p class="card-desc" contenteditable="false" data-key="card-2-desc">
+        Your next data engineering project goes here. Replace this card with
+        real details when you're ready.
+      </p>
+      <div class="card-tags">
+        <span class="tag">BigQuery</span>
+        <span class="tag">dbt</span>
+      </div>
+      <input class="card-tags-input" type="text" placeholder="Tags (comma-separated)" data-key="card-2-tags" value="BigQuery, dbt" />
+      <div class="card-link-wrap">
+        <a href="#" class="card-link" data-key="card-2-url">View Project →</a>
+        <input class="card-url-input" type="text" placeholder="https://your-live-url.run.app" data-key="card-2-url-input" />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Tech Stack ── -->
+<section id="stack">
+  <h2>Tech Stack</h2>
+  <div class="stack-grid">
+    <div class="stack-group">
+      <p class="stack-group-title">Cloud</p>
+      <div class="stack-items">
+        <span class="stack-item">GCP</span>
+        <span class="stack-item">Cloud Run</span>
+        <span class="stack-item">Artifact Registry</span>
+        <span class="stack-item">Cloud Storage</span>
+      </div>
+    </div>
+    <div class="stack-group">
+      <p class="stack-group-title">Languages</p>
+      <div class="stack-items">
+        <span class="stack-item">Python</span>
+        <span class="stack-item">SQL</span>
+      </div>
+    </div>
+    <div class="stack-group">
+      <p class="stack-group-title">Data</p>
+      <div class="stack-items">
+        <span class="stack-item">BigQuery</span>
+        <span class="stack-item">Pandas</span>
+        <span class="stack-item">dbt</span>
+      </div>
+    </div>
+    <div class="stack-group">
+      <p class="stack-group-title">Tools</p>
+      <div class="stack-items">
+        <span class="stack-item">Replit</span>
+        <span class="stack-item">GitHub</span>
+        <span class="stack-item">Docker</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GCP Guide ── -->
+<section id="guide">
+  <div class="guide-header">
+    <h2 style="margin-bottom:0">GCP Hosting Guide</h2>
+    <span class="terminal-badge">terminal / docs</span>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="guide-progress-wrap">
+    <span class="progress-label">Progress: <strong id="steps-done-count">0</strong> / <strong>6</strong> steps</span>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <span class="progress-complete-badge" id="complete-badge">&#10003; Guide Complete</span>
+  </div>
+
+  <div class="accordion">
+
+    <!-- Step 1 -->
+    <div class="accordion-item" id="step-1">
+      <button class="accordion-btn" onclick="toggleStep('step-1')">
+        <span class="step-num">01</span>
+        <span class="step-title">GCP Account Setup &amp; Free Tier Overview</span>
+        <span class="step-done-badge">&#10003; Done</span>
+        <span class="chevron">&#9658;</span>
+      </button>
+      <div class="accordion-body">
+        <p class="step-plain">
+          Create a free Google Cloud account at <strong>cloud.google.com</strong>. Google gives you
+          <strong>$300 in credits</strong> for 90 days plus an always-free tier that never expires.
+          For Cloud Run specifically, the free tier covers <strong>2 million requests/month</strong>,
+          360,000 GB-seconds of compute, and 180,000 vCPU-seconds — more than enough for a portfolio
+          project. You'll need a credit card to verify identity, but won't be charged unless you
+          manually upgrade.
+        </p>
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Install the Google Cloud CLI (macOS / Linux)</span>
+<span class="cmd">curl</span> <span class="flag">-O</span> https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
+<span class="cmd">tar</span> <span class="flag">-xf</span> google-cloud-cli-linux-x86_64.tar.gz
+<span class="cmd">./google-cloud-sdk/install.sh</span>
+
+<span class="comment"># Authenticate and create your project</span>
+<span class="cmd">gcloud</span> auth login
+<span class="cmd">gcloud</span> projects create <span class="str">my-portfolio-project</span> <span class="flag">--name</span>=<span class="str">"Portfolio"</span>
+<span class="cmd">gcloud</span> config set project <span class="str">my-portfolio-project</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="why-callout">
+          <strong>&#10003; Why this step?</strong>
+          The gcloud CLI is the main tool for everything that follows. Authenticating now means you
+          can deploy, push images, and manage billing entirely from the terminal.
+        </div>
+        <div class="step-actions">
+          <div class="step-notes-wrap">
+            <p class="step-notes-label">YOUR NOTES</p>
+            <textarea class="step-notes" data-step="step-1" placeholder="Add your own notes here — project ID, issues you ran into, etc." oninput="saveNotes(this)"></textarea>
+          </div>
+          <button class="mark-complete-btn" data-step="step-1" onclick="toggleComplete('step-1')">
+            <span class="check-icon">&#9675;</span>
+            <span class="btn-label">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="accordion-item" id="step-2">
+      <button class="accordion-btn" onclick="toggleStep('step-2')">
+        <span class="step-num">02</span>
+        <span class="step-title">Preparing Your App for Deployment</span>
+        <span class="step-done-badge">&#10003; Done</span>
+        <span class="chevron">&#9658;</span>
+      </button>
+      <div class="accordion-body">
+        <p class="step-plain">
+          Cloud Run runs your app as a <strong>Docker container</strong>. You need two files in
+          your project root: a <strong>Dockerfile</strong> and a <strong>requirements.txt</strong>.
+          The most common error here is running <code>docker build</code> from the wrong folder —
+          your terminal must be <strong>inside the same directory as your Dockerfile</strong>.
+        </p>
+
+        <div class="why-callout" style="margin-bottom:1.25rem; background:#1a0f0f; border-color:#f85149;">
+          <strong style="color:#f85149;">&#9888; Common error — "no such file or directory"</strong>
+          If you see <code>open Dockerfile: no such file or directory</code>, Docker can't find your
+          Dockerfile. Your terminal is in the wrong folder. Run the directory check below first.
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># 1. Confirm you're in the right directory</span>
+<span class="cmd">pwd</span>
+<span class="comment"># Should show the folder containing your app files</span>
+
+<span class="comment"># 2. Check Dockerfile and requirements.txt are present</span>
+<span class="cmd">ls</span> <span class="flag">-la</span>
+<span class="comment"># You should see: Dockerfile  requirements.txt  app.py</span>
+
+<span class="comment"># If you're in the wrong place, navigate to your project folder:</span>
+<span class="cmd">cd</span> <span class="str">/path/to/your/project</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># requirements.txt — save this in your project folder</span>
+flask==3.0.3
+gunicorn==22.0.0</pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Dockerfile — no file extension, saved in your project folder</span>
+FROM python:3.12-slim
+
+WORKDIR /app
+COPY requirements.txt .
+<span class="cmd">RUN</span> pip install <span class="flag">--no-cache-dir</span> <span class="flag">-r</span> requirements.txt
+
+COPY . .
+
+ENV PORT=8080
+EXPOSE 8080
+
+<span class="cmd">CMD</span> [<span class="str">"gunicorn"</span>, <span class="str">"--bind"</span>, <span class="str">"0.0.0.0:8080"</span>, <span class="str">"app:app"</span>]</pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Verify both files exist before moving to Step 3</span>
+<span class="cmd">ls</span> Dockerfile requirements.txt
+<span class="comment"># Expected: Dockerfile    requirements.txt</span>
+<span class="comment"># If you see "No such file" — the file isn't saved in this folder yet</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="why-callout">
+          <strong>&#10003; Why this step?</strong>
+          <code>python:3.12-slim</code> keeps the image small for faster deploys. Gunicorn is a
+          production-grade WSGI server — never use Flask's built-in dev server in production.
+          The <code>PORT</code> env variable lets Cloud Run dynamically assign the port.
+        </div>
+        <div class="step-actions">
+          <div class="step-notes-wrap">
+            <p class="step-notes-label">YOUR NOTES</p>
+            <textarea class="step-notes" data-step="step-2" placeholder="e.g. your app entry point filename if it's not app.py" oninput="saveNotes(this)"></textarea>
+          </div>
+          <button class="mark-complete-btn" data-step="step-2" onclick="toggleComplete('step-2')">
+            <span class="check-icon">&#9675;</span>
+            <span class="btn-label">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="accordion-item" id="step-3">
+      <button class="accordion-btn" onclick="toggleStep('step-3')">
+        <span class="step-num">03</span>
+        <span class="step-title">Pushing to Artifact Registry</span>
+        <span class="step-done-badge">&#10003; Done</span>
+        <span class="chevron">&#9658;</span>
+      </button>
+      <div class="accordion-body">
+        <p class="step-plain">
+          Google Artifact Registry stores your Docker images privately. You build the image locally
+          and push it to a repository in your GCP project. Cloud Run pulls from that registry during
+          deployment — no third-party registry credentials needed. <strong>Complete Step 2 fully
+          before running anything here</strong> — the push error <code>tag does not exist</code>
+          means the build in Step 2 didn't succeed yet.
+        </p>
+
+        <div class="why-callout" style="margin-bottom:1.25rem; background:#1a0f0f; border-color:#f85149;">
+          <strong style="color:#f85149;">&#9888; Common error — "tag does not exist"</strong>
+          If you see <code>tag does not exist: .../my-app:latest</code> on push, the Docker build
+          in Step 2 failed or was never run. There is no image to push yet. Fix the build first,
+          then come back here.
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Enable required APIs (one-time)</span>
+<span class="cmd">gcloud</span> services enable artifactregistry.googleapis.com run.googleapis.com
+
+<span class="comment"># Create a Docker repository in Artifact Registry (one-time)</span>
+<span class="cmd">gcloud</span> artifacts repositories create <span class="str">portfolio-repo</span> \
+  <span class="flag">--repository-format</span>=docker \
+  <span class="flag">--location</span>=<span class="str">us-central1</span> \
+  <span class="flag">--description</span>=<span class="str">"Portfolio app images"</span>
+
+<span class="comment"># Authenticate Docker to push to GCP</span>
+<span class="cmd">gcloud</span> auth configure-docker <span class="str">us-central1-docker.pkg.dev</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Build your image — run this from inside your project folder</span>
+<span class="comment"># (the dot at the end means "look for Dockerfile here")</span>
+<span class="cmd">docker</span> build <span class="flag">-t</span> <span class="str">us-central1-docker.pkg.dev/my-portfolio-project/portfolio-repo/my-app:latest</span> .
+
+<span class="comment"># Verify the image was built successfully before pushing</span>
+<span class="cmd">docker</span> images | <span class="cmd">grep</span> <span class="str">my-app</span>
+<span class="comment"># Expected: us-central1-docker.pkg.dev/.../my-app   latest   abc123   ...</span>
+<span class="comment"># If this returns nothing — the build failed. Check the output above for errors.</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Only run this once docker images shows your image above</span>
+<span class="cmd">docker</span> push <span class="str">us-central1-docker.pkg.dev/my-portfolio-project/portfolio-repo/my-app:latest</span>
+
+<span class="comment"># Confirm the image is in Artifact Registry</span>
+<span class="cmd">gcloud</span> artifacts docker images list \
+  <span class="str">us-central1-docker.pkg.dev/my-portfolio-project/portfolio-repo</span>
+<span class="comment"># Expected: a row showing my-app with a digest and timestamp</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="why-callout">
+          <strong>&#10003; Why this step?</strong>
+          Artifact Registry is tightly integrated with Cloud Run — no extra permissions needed. The
+          <code>docker images</code> check before pushing confirms you have a local image to push,
+          catching build failures before they become confusing push errors.
+        </div>
+        <div class="step-actions">
+          <div class="step-notes-wrap">
+            <p class="step-notes-label">YOUR NOTES</p>
+            <textarea class="step-notes" data-step="step-3" placeholder="e.g. your actual project ID and image tag" oninput="saveNotes(this)"></textarea>
+          </div>
+          <button class="mark-complete-btn" data-step="step-3" onclick="toggleComplete('step-3')">
+            <span class="check-icon">&#9675;</span>
+            <span class="btn-label">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="accordion-item" id="step-4">
+      <button class="accordion-btn" onclick="toggleStep('step-4')">
+        <span class="step-num">04</span>
+        <span class="step-title">Deploying to Cloud Run (Free Tier Settings)</span>
+        <span class="step-done-badge">&#10003; Done</span>
+        <span class="chevron">&#9658;</span>
+      </button>
+      <div class="accordion-body">
+        <p class="step-plain">
+          Deploy your image with flags tuned for the free tier.
+          <strong>--min-instances 0</strong> means the service scales to zero when not in use —
+          you pay nothing for idle time. <strong>--allow-unauthenticated</strong> makes it
+          publicly accessible. You get a live HTTPS URL immediately.
+        </p>
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="cmd">gcloud</span> run deploy <span class="str">my-app</span> \
+  <span class="flag">--image</span>=<span class="str">us-central1-docker.pkg.dev/my-portfolio-project/portfolio-repo/my-app:latest</span> \
+  <span class="flag">--platform</span>=managed \
+  <span class="flag">--region</span>=<span class="str">us-central1</span> \
+  <span class="flag">--allow-unauthenticated</span> \
+  <span class="flag">--min-instances</span>=<span class="str">0</span> \
+  <span class="flag">--max-instances</span>=<span class="str">3</span> \
+  <span class="flag">--memory</span>=<span class="str">256Mi</span> \
+  <span class="flag">--cpu</span>=<span class="str">1</span> \
+  <span class="flag">--concurrency</span>=<span class="str">80</span>
+
+<span class="comment"># Get your live URL</span>
+<span class="cmd">gcloud</span> run services describe <span class="str">my-app</span> \
+  <span class="flag">--region</span>=<span class="str">us-central1</span> \
+  <span class="flag">--format</span>=<span class="str">"value(status.url)"</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="why-callout">
+          <strong>&#10003; Why this step?</strong>
+          <code>--min-instances 0</code> is the key free-tier flag — your service hibernates when idle
+          and only wakes on request. Cloud Run handles HTTPS, load balancing, and scaling automatically.
+        </div>
+        <div class="step-actions">
+          <div class="step-notes-wrap">
+            <p class="step-notes-label">YOUR NOTES</p>
+            <textarea class="step-notes" data-step="step-4" placeholder="Paste your live Cloud Run URL here once deployed" oninput="saveNotes(this)"></textarea>
+          </div>
+          <button class="mark-complete-btn" data-step="step-4" onclick="toggleComplete('step-4')">
+            <span class="check-icon">&#9675;</span>
+            <span class="btn-label">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="accordion-item" id="step-5">
+      <button class="accordion-btn" onclick="toggleStep('step-5')">
+        <span class="step-num">05</span>
+        <span class="step-title">Budget Alerts &amp; Free Tier Guardrails</span>
+        <span class="step-done-badge">&#10003; Done</span>
+        <span class="chevron">&#9658;</span>
+      </button>
+      <div class="accordion-body">
+        <p class="step-plain">
+          Even on the free tier, setting a <strong>$0 budget alert</strong> is good practice. It
+          notifies you immediately if something unexpected generates charges. You can also set a hard
+          cap using Cloud Billing budget actions to stop billing if a threshold is crossed.
+        </p>
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Enable the billing budgets API</span>
+<span class="cmd">gcloud</span> services enable billingbudgets.googleapis.com
+
+<span class="comment"># Create a $5 monthly budget with alerts at 50% and 100%</span>
+<span class="comment"># (Replace BILLING_ACCOUNT_ID — get it from: gcloud billing accounts list)</span>
+<span class="cmd">gcloud</span> billing budgets create \
+  <span class="flag">--billing-account</span>=<span class="str">BILLING_ACCOUNT_ID</span> \
+  <span class="flag">--display-name</span>=<span class="str">"Portfolio Budget"</span> \
+  <span class="flag">--budget-amount</span>=<span class="str">5USD</span> \
+  <span class="flag">--threshold-rule</span>=<span class="str">percent=50,basis=CURRENT_SPEND</span> \
+  <span class="flag">--threshold-rule</span>=<span class="str">percent=100,basis=CURRENT_SPEND</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="why-callout">
+          <strong>&#10003; Why this step?</strong>
+          Free tier limits are generous but a misconfigured loop or traffic spike could push you over.
+          A $5 budget alert costs nothing to set up and means no surprise bills.
+        </div>
+        <div class="step-actions">
+          <div class="step-notes-wrap">
+            <p class="step-notes-label">YOUR NOTES</p>
+            <textarea class="step-notes" data-step="step-5" placeholder="e.g. your billing account ID" oninput="saveNotes(this)"></textarea>
+          </div>
+          <button class="mark-complete-btn" data-step="step-5" onclick="toggleComplete('step-5')">
+            <span class="check-icon">&#9675;</span>
+            <span class="btn-label">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="accordion-item" id="step-6">
+      <button class="accordion-btn" onclick="toggleStep('step-6')">
+        <span class="step-num">06</span>
+        <span class="step-title">Connecting Your Live URL to Your Portfolio Card</span>
+        <span class="step-done-badge">&#10003; Done</span>
+        <span class="chevron">&#9658;</span>
+      </button>
+      <div class="accordion-body">
+        <p class="step-plain">
+          Once deployed, grab the auto-generated Cloud Run URL and paste it into your portfolio
+          card's <strong>"View Project"</strong> link. For a cleaner URL, you can also map a
+          custom domain to your Cloud Run service — free, takes effect within minutes.
+        </p>
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Fetch your live service URL</span>
+<span class="cmd">gcloud</span> run services describe <span class="str">my-app</span> \
+  <span class="flag">--region</span>=<span class="str">us-central1</span> \
+  <span class="flag">--format</span>=<span class="str">"value(status.url)"</span>
+<span class="comment"># → https://my-app-abc123-uc.a.run.app</span>
+
+<span class="comment"># (Optional) Map a custom domain</span>
+<span class="cmd">gcloud</span> run domain-mappings create \
+  <span class="flag">--service</span>=<span class="str">my-app</span> \
+  <span class="flag">--domain</span>=<span class="str">app.yourdomain.com</span> \
+  <span class="flag">--region</span>=<span class="str">us-central1</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment">&lt;!-- Update your portfolio card href with the live URL --&gt;</span>
+&lt;<span class="cmd">a</span> <span class="flag">href</span>=<span class="str">"https://my-app-abc123-uc.a.run.app"</span> <span class="flag">class</span>=<span class="str">"card-link"</span>&gt;
+  View Project →
+&lt;/<span class="cmd">a</span>&gt;</pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="why-callout">
+          <strong>&#10003; Why this step?</strong>
+          Cloud Run provides a free HTTPS subdomain automatically. Custom domains are also free and
+          need only a DNS record update. Your portfolio card now links directly to your live project.
+        </div>
+        <div class="step-actions">
+          <div class="step-notes-wrap">
+            <p class="step-notes-label">YOUR NOTES</p>
+            <textarea class="step-notes" data-step="step-6" placeholder="Paste your final live URL here" oninput="saveNotes(this)"></textarea>
+          </div>
+          <button class="mark-complete-btn" data-step="step-6" onclick="toggleComplete('step-6')">
+            <span class="check-icon">&#9675;</span>
+            <span class="btn-label">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /accordion -->
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p class="footer-brand">
+    Built by <span contenteditable="false" data-key="footer-name">Daniel Adeniran</span>
+  </p>
+  <div class="footer-links">
+    <a href="https://github.com" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.42 7.88 10.95.58.1.79-.25.79-.56v-2.04c-3.2.69-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.07 11.07 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.43-2.7 5.41-5.27 5.69.41.36.78 1.07.78 2.16v3.2c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+      GitHub
+    </a>
+    <a href="https://linkedin.com" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.44-2.14 2.93v5.68H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.35-1.85 3.59 0 4.25 2.36 4.25 5.43v6.31zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+      LinkedIn
+    </a>
+  </div>
+</footer>
+
+<script>
+  // ── State ──────────────────────────────────────────────────────────────
+  const STEPS = ['step-1','step-2','step-3','step-4','step-5','step-6'];
+  let cardCounter = 3; // next card ID
+
+  // ── localStorage helpers ───────────────────────────────────────────────
+  function save(key, value) {
+    try { localStorage.setItem('portfolio_' + key, JSON.stringify(value)); } catch(e){}
+  }
+  function load(key, fallback) {
+    try {
+      const v = localStorage.getItem('portfolio_' + key);
+      return v !== null ? JSON.parse(v) : fallback;
+    } catch(e) { return fallback; }
+  }
+
+  function showToast() {
+    const t = document.getElementById('save-toast');
+    t.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  // ── Edit mode ─────────────────────────────────────────────────────────
+  function toggleEditMode() {
+    const body = document.body;
+    const on = body.classList.toggle('edit-mode');
+    document.getElementById('edit-label').textContent = on ? 'Exit Edit' : 'Edit Mode';
+
+    // toggle contenteditable on all editable elements
+    document.querySelectorAll('[contenteditable]').forEach(el => {
+      el.contentEditable = on ? 'true' : 'false';
+    });
+
+    // wire up save-on-blur for contenteditable elements when entering edit mode
+    if (on) {
+      document.querySelectorAll('[data-key][contenteditable]').forEach(el => {
+        el.addEventListener('blur', onEditableBlur);
+      });
+    } else {
+      document.querySelectorAll('[data-key][contenteditable]').forEach(el => {
+        el.removeEventListener('blur', onEditableBlur);
+      });
+    }
+  }
+
+  function onEditableBlur(e) {
+    const key = e.target.dataset.key;
+    if (!key) return;
+    save(key, e.target.innerHTML);
+    showToast();
+  }
+
+  // ── URL inputs (project cards) ─────────────────────────────────────────
+  document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('card-url-input')) {
+      const key = e.target.dataset.key;
+      const val = e.target.value.trim();
+      save(key, val);
+      // also update the visible link href
+      const card = e.target.closest('.card');
+      const link = card.querySelector('.card-link');
+      if (link && val) link.href = val;
+      showToast();
+    }
+    if (e.target.classList.contains('card-tags-input')) {
+      const key = e.target.dataset.key;
+      save(key, e.target.value);
+      // regenerate visible tags
+      const card = e.target.closest('.card');
+      const tagsDiv = card.querySelector('.card-tags');
+      if (tagsDiv) {
+        tagsDiv.innerHTML = e.target.value.split(',')
+          .map(t => t.trim()).filter(Boolean)
+          .map(t => `<span class="tag">${t}</span>`).join('');
+      }
+      showToast();
+    }
+  });
+
+  // ── Step accordion ─────────────────────────────────────────────────────
+  function toggleStep(id) {
+    const item = document.getElementById(id);
+    item.classList.toggle('open');
+  }
+
+  // ── Step completion ────────────────────────────────────────────────────
+  function toggleComplete(stepId) {
+    const item = document.getElementById(stepId);
+    const isDone = item.classList.toggle('step-done');
+    const btn = item.querySelector('.mark-complete-btn');
+    const icon = btn.querySelector('.check-icon');
+    const label = btn.querySelector('.btn-label');
+
+    if (isDone) {
+      btn.classList.add('done');
+      icon.textContent = '✓';
+      label.textContent = 'Completed';
+    } else {
+      btn.classList.remove('done');
+      icon.textContent = '○';
+      label.textContent = 'Mark Complete';
+    }
+
+    // close the accordion if just marked complete
+    if (isDone) {
+      setTimeout(() => item.classList.remove('open'), 300);
+    }
+
+    // persist
+    const doneSteps = STEPS.filter(s => document.getElementById(s).classList.contains('step-done'));
+    save('completed-steps', doneSteps);
+    updateProgress();
+    showToast();
+  }
+
+  function updateProgress() {
+    const done = STEPS.filter(s => document.getElementById(s).classList.contains('step-done')).length;
+    const total = STEPS.length;
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('steps-done-count').textContent = done;
+    const badge = document.getElementById('complete-badge');
+    badge.classList.toggle('visible', done === total);
+  }
+
+  // ── Notes ──────────────────────────────────────────────────────────────
+  function saveNotes(textarea) {
+    save('notes-' + textarea.dataset.step, textarea.value);
+    showToast();
+  }
+
+  // ── Copy code ──────────────────────────────────────────────────────────
+  function copyCode(btn) {
+    const pre = btn.previousElementSibling;
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = 'Copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // ── Add / delete project cards ─────────────────────────────────────────
+  function addProjectCard() {
+    const id = 'card-' + cardCounter++;
+    const grid = document.getElementById('projects-grid');
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.dataset.id = id;
+    div.innerHTML = `
+      <button class="card-delete" onclick="deleteCard('${id}')">&#215; Remove</button>
+      <p class="card-title" contenteditable="true" data-key="${id}-title">Project Title</p>
+      <p class="card-desc" contenteditable="true" data-key="${id}-desc">Describe your project here — what it does, how it works, what you learned.</p>
+      <div class="card-tags"><span class="tag">Tag</span></div>
+      <input class="card-tags-input" type="text" placeholder="Tags (comma-separated)" data-key="${id}-tags" value="Tag" />
+      <div class="card-link-wrap">
+        <a href="#" class="card-link" data-key="${id}-url">View Project →</a>
+        <input class="card-url-input" type="text" placeholder="https://your-live-url.run.app" data-key="${id}-url-input" />
+      </div>`;
+    grid.appendChild(div);
+
+    // wire up blur listeners for the new contenteditable elements
+    div.querySelectorAll('[data-key][contenteditable]').forEach(el => {
+      el.addEventListener('blur', onEditableBlur);
+    });
+
+    // persist card list
+    saveCardList();
+    showToast();
+  }
+
+  function deleteCard(id) {
+    const card = document.querySelector(`[data-id="${id}"]`);
+    if (card) {
+      card.style.transition = 'opacity 0.2s';
+      card.style.opacity = '0';
+      setTimeout(() => { card.remove(); saveCardList(); }, 200);
+    }
+  }
+
+  function saveCardList() {
+    const ids = Array.from(document.querySelectorAll('#projects-grid .card')).map(c => c.dataset.id);
+    save('card-ids', ids);
+  }
+
+  // ── Restore saved state on load ────────────────────────────────────────
+  function restoreState() {
+    // Restore text fields
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const key = el.dataset.key;
+      const saved = load(key, null);
+      if (saved === null) return;
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.value = saved;
+        // trigger tag regeneration
+        if (el.classList.contains('card-tags-input')) {
+          const card = el.closest('.card');
+          const tagsDiv = card && card.querySelector('.card-tags');
+          if (tagsDiv) {
+            tagsDiv.innerHTML = saved.split(',').map(t => t.trim()).filter(Boolean)
+              .map(t => `<span class="tag">${t}</span>`).join('');
+          }
+        }
+        // restore URL on the visible link
+        if (el.classList.contains('card-url-input') && saved) {
+          const card = el.closest('.card');
+          const link = card && card.querySelector('.card-link');
+          if (link) link.href = saved;
+        }
+      } else {
+        el.innerHTML = saved;
+      }
+    });
+
+    // Restore completed steps
+    const doneSteps = load('completed-steps', []);
+    doneSteps.forEach(stepId => {
+      const item = document.getElementById(stepId);
+      if (!item) return;
+      item.classList.add('step-done');
+      const btn = item.querySelector('.mark-complete-btn');
+      if (btn) {
+        btn.classList.add('done');
+        btn.querySelector('.check-icon').textContent = '✓';
+        btn.querySelector('.btn-label').textContent = 'Completed';
+      }
+    });
+
+    // Restore notes
+    STEPS.forEach(stepId => {
+      const saved = load('notes-' + stepId, null);
+      if (saved === null) return;
+      const ta = document.querySelector(`.step-notes[data-step="${stepId}"]`);
+      if (ta) ta.value = saved;
+    });
+
+    updateProgress();
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────────
+  document.getElementById('step-1').classList.add('open');
+  restoreState();
+</script>
+</body>
+</html>
