@@ -461,7 +461,6 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      overflow: hidden;
       transition: border-color 0.2s;
     }
     .accordion-item.open { border-color: var(--teal-dim); }
@@ -479,6 +478,7 @@
       gap: 0.9rem;
       text-align: left;
       color: var(--text);
+      border-radius: var(--radius);
     }
     .accordion-btn:hover { background: rgba(45, 212, 191, 0.04); }
     .step-num {
@@ -513,22 +513,19 @@
     .chevron {
       color: var(--muted);
       font-size: 0.75rem;
-      transition: transform 0.25s;
+      transition: transform 0.3s;
       flex-shrink: 0;
     }
     .accordion-item.open .chevron { transform: rotate(90deg); }
 
     .accordion-body {
-      max-height: 0;
       overflow: hidden;
-      padding: 0 1.4rem;
+      max-height: 0;
+      transition: max-height 0.4s ease;
       border-top: 0px solid var(--border);
-      transition: max-height 0.35s ease, padding 0.25s ease, border-top-width 0.25s ease;
     }
-    .accordion-item.open .accordion-body {
-      display: block;
-      max-height: 2000px;
-      padding: 0 1.4rem 1.4rem;
+    .accordion-body-inner {
+      padding: 1.2rem 1.4rem 1.4rem;
       border-top: 1px solid var(--border);
     }
 
@@ -1828,9 +1825,50 @@ https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span
   });
 
   // ── Step accordion ─────────────────────────────────────────────────────
+  function initAccordions() {
+    document.querySelectorAll('.accordion-body').forEach(body => {
+      // wrap content in inner div for clean height measurement
+      const inner = document.createElement('div');
+      inner.className = 'accordion-body-inner';
+      while (body.firstChild) inner.appendChild(body.firstChild);
+      body.appendChild(inner);
+      body.style.maxHeight = '0';
+    });
+  }
+
+  function openStep(id) {
+    const item = document.getElementById(id);
+    if (!item) return;
+    const body = item.querySelector('.accordion-body');
+    if (!body) return;
+    item.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    // once open, remove fixed height so content can resize freely
+    body.addEventListener('transitionend', function handler() {
+      if (item.classList.contains('open')) body.style.maxHeight = 'none';
+      body.removeEventListener('transitionend', handler);
+    });
+  }
+
+  function closeStep(id) {
+    const item = document.getElementById(id);
+    if (!item) return;
+    const body = item.querySelector('.accordion-body');
+    if (!body) return;
+    // pin to current height first so transition has a start point
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        body.style.maxHeight = '0';
+        item.classList.remove('open');
+      });
+    });
+  }
+
   function toggleStep(id) {
     const item = document.getElementById(id);
-    item.classList.toggle('open');
+    if (!item) return;
+    item.classList.contains('open') ? closeStep(id) : openStep(id);
   }
 
   // ── Step completion ────────────────────────────────────────────────────
@@ -1851,9 +1889,9 @@ https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span
       label.textContent = 'Mark Complete';
     }
 
-    // close the accordion if just marked complete
+    // close the accordion smoothly if just marked complete
     if (isDone) {
-      setTimeout(() => item.classList.remove('open'), 300);
+      setTimeout(() => closeStep(stepId), 300);
     }
 
     // persist
@@ -2089,4 +2127,11 @@ https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span
     });
   }
 
-  // ── Init ───────────────────────────�
+  // Init
+  initAccordions();
+  restoreState();
+  restoreCertFields();
+  openStep('step-1');
+</script>
+</body>
+</html>
