@@ -1489,18 +1489,30 @@ EXPOSE 8080
           than enough. Once set up, deploying an update is a single command.
         </p>
 
+        <div class="why-callout" style="margin-bottom:1.25rem; background:#0f1a2e; border-color:#58a6ff;">
+          <strong style="color:#58a6ff;">&#9432; gsutil is now legacy — use gcloud storage</strong>
+          Google has replaced <code>gsutil</code> with <code>gcloud storage</code> as the
+          recommended CLI for Cloud Storage. It is faster, better maintained, and built into
+          the same <code>gcloud</code> tool you already have. All commands below use
+          <code>gcloud storage</code>.
+        </div>
+
         <div class="code-block-wrap">
-          <pre class="code-block"><span class="comment"># 1. Create your bucket in EU region (name is already reserved)</span>
-<span class="cmd">gsutil</span> mb <span class="flag">-l</span> eu gs://<span class="str">daniel-adeniran-portfolio</span>
+          <pre class="code-block"><span class="comment"># 1. Create your bucket in EU region</span>
+<span class="cmd">gcloud</span> storage buckets create gs://<span class="str">daniel-adeniran-portfolio</span> \
+  <span class="flag">--location</span>=eu
 
 <span class="comment"># 2. Make all files in the bucket publicly readable</span>
-<span class="cmd">gsutil</span> iam ch allUsers:objectViewer gs://<span class="str">daniel-adeniran-portfolio</span>
+<span class="cmd">gcloud</span> storage buckets add-iam-policy-binding gs://<span class="str">daniel-adeniran-portfolio</span> \
+  <span class="flag">--member</span>=allUsers \
+  <span class="flag">--role</span>=roles/storage.objectViewer
 
-<span class="comment"># 3. Tell GCP this bucket serves a static website (index.html is the entry point)</span>
-<span class="cmd">gsutil</span> web set <span class="flag">-m</span> index.html gs://<span class="str">daniel-adeniran-portfolio</span>
+<span class="comment"># 3. Configure the bucket to serve index.html as the site entry point</span>
+<span class="cmd">gcloud</span> storage buckets update gs://<span class="str">daniel-adeniran-portfolio</span> \
+  <span class="flag">--web-main-page-suffix</span>=index.html
 
 <span class="comment"># 4. Upload your index.html for the first time</span>
-<span class="cmd">gsutil</span> cp index.html gs://<span class="str">daniel-adeniran-portfolio</span></pre>
+<span class="cmd">gcloud</span> storage cp index.html gs://<span class="str">daniel-adeniran-portfolio</span></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
 
@@ -1519,10 +1531,10 @@ https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span
 
         <div class="code-block-wrap">
           <pre class="code-block"><span class="comment"># Re-deploy after any update — run from the folder containing index.html</span>
-<span class="cmd">gsutil</span> cp index.html gs://<span class="str">daniel-adeniran-portfolio</span>
+<span class="cmd">gcloud</span> storage cp index.html gs://<span class="str">daniel-adeniran-portfolio</span>
 
 <span class="comment"># Verify it uploaded correctly</span>
-<span class="cmd">gsutil</span> ls <span class="flag">-l</span> gs://<span class="str">daniel-adeniran-portfolio</span>/index.html
+<span class="cmd">gcloud</span> storage ls <span class="flag">--long</span> gs://<span class="str">daniel-adeniran-portfolio</span>/index.html
 <span class="comment"># Expected: file size, timestamp, and gs://daniel-adeniran-portfolio/index.html</span></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
@@ -1630,7 +1642,7 @@ https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span
 
 <span class="comment"># Set your Git identity (use the email registered on GitHub)</span>
 <span class="cmd">git</span> config user.name <span class="str">"Daniel Adeniran"</span>
-<span class="cmd">git</span> config user.email <span class="str">"your-email@example.com"</span>
+<span class="cmd">git</span> config user.email <span class="str">"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ce5f3e9eeb1f9f1fdf5f0dcf9e4fdf1ecf0f9b2fff3f1">[email&#160;protected]</a>"</span>
 
 <span class="comment"># Connect to your GitHub repo (replace YOUR-USERNAME with your GitHub username)</span>
 <span class="cmd">git</span> remote add origin https://github.com/<span class="str">YOUR-USERNAME</span>/portfolio.git
@@ -1691,7 +1703,7 @@ https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span
 <span class="cmd">git</span> push
 
 <span class="comment"># Push to GCP Cloud Storage (updates your GCP URL)</span>
-<span class="cmd">gsutil</span> cp index.html gs://<span class="str">daniel-adeniran-portfolio</span></pre>
+<span class="cmd">gcloud</span> storage cp index.html gs://<span class="str">daniel-adeniran-portfolio</span></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
 
@@ -1735,7 +1747,7 @@ https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ── State ──────────────────────────────────────────────────────────────
   const STEPS = ['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8'];
   let cardCounter = 3; // next card ID
@@ -2077,10 +2089,4 @@ https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span
     });
   }
 
-  // ── Init ───────────────────────────────────────────────────────────────
-  document.getElementById('step-1').classList.add('open');
-  restoreState();
-  restoreCertFields();
-</script>
-</body>
-</html>
+  // ── Init ───────────────────────────�
