@@ -671,6 +671,178 @@
     }
     .check-icon { font-size: 0.85rem; }
 
+    /* ── Certifications ── */
+    .certs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .certs-header h2 { margin-bottom: 0; }
+
+    #add-cert-btn {
+      display: none;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius);
+      border: 1px dashed var(--teal-dim);
+      background: transparent;
+      color: var(--teal);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #add-cert-btn:hover { background: rgba(45,212,191,0.06); border-color: var(--teal); }
+    body.edit-mode #add-cert-btn { display: flex; }
+
+    .certs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .cert-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .cert-card:hover { border-color: var(--teal-dim); transform: translateY(-2px); }
+
+    .cert-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
+    .cert-issuer-badge {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 6px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--teal);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
+    .cert-issuer-badge img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      padding: 5px;
+    }
+    .cert-meta { flex: 1; min-width: 0; }
+    .cert-name {
+      font-size: 0.97rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 0.25rem;
+    }
+    .cert-issuer {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--teal);
+      margin-bottom: 0.2rem;
+    }
+    .cert-date {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .cert-id {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.3rem 0.6rem;
+      word-break: break-all;
+    }
+    .cert-id span { color: #8b949e; }
+
+    .cert-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.25rem;
+    }
+    .cert-verify {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: gap 0.2s;
+    }
+    .cert-verify:hover { gap: 0.55rem; }
+    .cert-badge-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid rgba(74,222,128,0.25);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+    }
+
+    /* Edit-mode inputs for cert cards */
+    .cert-edit-fields {
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    body.edit-mode .cert-edit-fields { display: flex; }
+    body.edit-mode .cert-card-top,
+    body.edit-mode .cert-id,
+    body.edit-mode .cert-footer { display: none; }
+
+    .cert-input {
+      width: 100%;
+      background: var(--code-bg);
+      border: 1px dashed var(--amber);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0.4rem 0.65rem;
+    }
+    .cert-input:focus { outline: none; border-color: var(--amber); }
+    .cert-input::placeholder { color: #404850; }
+
+    .cert-delete {
+      display: none;
+      position: absolute;
+      top: 0.6rem; right: 0.6rem;
+      background: rgba(248,81,73,0.1);
+      border: 1px solid rgba(248,81,73,0.3);
+      color: #f85149;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: all 0.2s;
+    }
+    .cert-delete:hover { background: rgba(248,81,73,0.2); }
+    body.edit-mode .cert-delete { display: block; }
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--border);
@@ -745,6 +917,7 @@
   <div class="nav-right">
     <div class="nav-links">
       <a href="#projects">Projects</a>
+      <a href="#certs">Certs</a>
       <a href="#stack">Stack</a>
       <a href="#guide">GCP Guide</a>
     </div>
@@ -821,6 +994,63 @@
   </div>
 </section>
 
+<!-- ── Certifications ── -->
+<section id="certs">
+  <div class="certs-header">
+    <h2>Certifications</h2>
+    <button id="add-cert-btn" onclick="addCertCard()">&#43; Add Certification</button>
+  </div>
+  <div class="certs-grid" id="certs-grid">
+
+    <!-- DataCamp placeholder -->
+    <div class="cert-card" data-cert-id="cert-1">
+      <button class="cert-delete" onclick="deleteCert('cert-1')">&#215; Remove</button>
+
+      <div class="cert-card-top">
+        <div class="cert-issuer-badge">DC</div>
+        <div class="cert-meta">
+          <p class="cert-name">Data Engineer Associate</p>
+          <p class="cert-issuer">DataCamp</p>
+          <p class="cert-date">Issued: —</p>
+        </div>
+      </div>
+
+      <div class="cert-id"><span>Credential ID: </span>—</div>
+
+      <div class="cert-footer">
+        <a href="#" class="cert-verify" target="_blank" rel="noopener">Verify Credential →</a>
+        <span class="cert-badge-tag">&#10003; Verified</span>
+      </div>
+
+      <!-- Edit mode inputs -->
+      <div class="cert-edit-fields">
+        <input class="cert-input" type="text" placeholder="Certification name" data-cert-key="cert-1-name" value="Data Engineer Associate" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Issuing organisation (e.g. DataCamp)" data-cert-key="cert-1-issuer" value="DataCamp" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Issuer abbreviation for badge (e.g. DC)" data-cert-key="cert-1-badge" value="DC" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Issue date (e.g. Jan 2025)" data-cert-key="cert-1-date" value="" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Credential ID" data-cert-key="cert-1-credid" value="" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Verify URL (from DataCamp share link)" data-cert-key="cert-1-url" value="" oninput="saveCertField(this)" />
+      </div>
+    </div>
+
+    <!-- Add your certs placeholder -->
+    <div class="cert-card" style="border-style:dashed; opacity:0.45;" data-cert-id="cert-placeholder">
+      <div class="cert-card-top">
+        <div class="cert-issuer-badge">+</div>
+        <div class="cert-meta">
+          <p class="cert-name">Your Next Certification</p>
+          <p class="cert-issuer">Issuer</p>
+          <p class="cert-date">Enable Edit Mode to add</p>
+        </div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-verify">Verify Credential →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ── Tech Stack ── -->
 <section id="stack">
   <h2>Tech Stack</h2>
@@ -869,7 +1099,7 @@
 
   <!-- Progress bar -->
   <div class="guide-progress-wrap">
-    <span class="progress-label">Progress: <strong id="steps-done-count">0</strong> / <strong>6</strong> steps</span>
+    <span class="progress-label">Progress: <strong id="steps-done-count">0</strong> / <strong>8</strong> steps</span>
     <div class="progress-bar-track">
       <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
     </div>
@@ -1243,6 +1473,248 @@ EXPOSE 8080
       </div>
     </div>
 
+    <!-- Step 7 -->
+    <div class="accordion-item" id="step-7">
+      <button class="accordion-btn" onclick="toggleStep('step-7')">
+        <span class="step-num">07</span>
+        <span class="step-title">Hosting Your Portfolio Site on Cloud Storage</span>
+        <span class="step-done-badge">&#10003; Done</span>
+        <span class="chevron">&#9658;</span>
+      </button>
+      <div class="accordion-body">
+        <p class="step-plain">
+          For a static HTML file like this portfolio, <strong>Cloud Storage is simpler and cheaper
+          than Cloud Run</strong> — no Docker, no containers, no build step. The free tier gives
+          you <strong>5GB storage</strong> and <strong>1GB egress/month</strong>, which is more
+          than enough. Once set up, deploying an update is a single command.
+        </p>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># 1. Create your bucket in EU region (name is already reserved)</span>
+<span class="cmd">gsutil</span> mb <span class="flag">-l</span> eu gs://<span class="str">daniel-adeniran-portfolio</span>
+
+<span class="comment"># 2. Make all files in the bucket publicly readable</span>
+<span class="cmd">gsutil</span> iam ch allUsers:objectViewer gs://<span class="str">daniel-adeniran-portfolio</span>
+
+<span class="comment"># 3. Tell GCP this bucket serves a static website (index.html is the entry point)</span>
+<span class="cmd">gsutil</span> web set <span class="flag">-m</span> index.html gs://<span class="str">daniel-adeniran-portfolio</span>
+
+<span class="comment"># 4. Upload your index.html for the first time</span>
+<span class="cmd">gsutil</span> cp index.html gs://<span class="str">daniel-adeniran-portfolio</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <p class="step-plain">Your site will be live at:</p>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Your live portfolio URL</span>
+https://storage.googleapis.com/<span class="str">daniel-adeniran-portfolio</span>/index.html</pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <p class="step-plain">
+          Every time you receive an updated <code>index.html</code> from Claude, just run this
+          one command to push it live — <strong>that's the only step needed for every future update:</strong>
+        </p>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Re-deploy after any update — run from the folder containing index.html</span>
+<span class="cmd">gsutil</span> cp index.html gs://<span class="str">daniel-adeniran-portfolio</span>
+
+<span class="comment"># Verify it uploaded correctly</span>
+<span class="cmd">gsutil</span> ls <span class="flag">-l</span> gs://<span class="str">daniel-adeniran-portfolio</span>/index.html
+<span class="comment"># Expected: file size, timestamp, and gs://daniel-adeniran-portfolio/index.html</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="why-callout">
+          <strong>&#10003; Why Cloud Storage instead of Cloud Run?</strong>
+          Cloud Run is for apps that need a server to run code. This portfolio is a static HTML file —
+          it doesn't need a server. Cloud Storage serves it directly, which means zero cold starts,
+          no Dockerfile, no container registry, and a simpler one-command deploy workflow.
+          The free tier comfortably covers a portfolio site with no ongoing cost.
+        </div>
+        <div class="step-actions">
+          <div class="step-notes-wrap">
+            <p class="step-notes-label">YOUR NOTES</p>
+            <textarea class="step-notes" data-step="step-7" placeholder="Paste your live URL here once the bucket is set up" oninput="saveNotes(this)"></textarea>
+          </div>
+          <button class="mark-complete-btn" data-step="step-7" onclick="toggleComplete('step-7')">
+            <span class="check-icon">&#9675;</span>
+            <span class="btn-label">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 8 -->
+    <div class="accordion-item" id="step-8">
+      <button class="accordion-btn" onclick="toggleStep('step-8')">
+        <span class="step-num">08</span>
+        <span class="step-title">Adding Your Site to GitHub &amp; Enabling GitHub Pages</span>
+        <span class="step-done-badge">&#10003; Done</span>
+        <span class="chevron">&#9658;</span>
+      </button>
+      <div class="accordion-body">
+        <p class="step-plain">
+          GitHub gives you two things here: <strong>version history</strong> — every update we
+          make to your site is tracked as a commit, so you can always roll back — and
+          <strong>GitHub Pages</strong>, a free hosting option that gives you a clean URL like
+          <code>https://daniel-adeniran.github.io/portfolio</code>. That URL is better for
+          LinkedIn and recruiters than the Cloud Storage URL. You'll maintain both.
+        </p>
+
+        <p class="step-plain">
+          <strong>Part 1 — Create the repository on GitHub.com</strong><br/>
+          Do this in your browser before running any terminal commands.
+        </p>
+
+        <div class="why-callout" style="margin-bottom:1.25rem; background:#0f1a2e; border-color:#58a6ff;">
+          <strong style="color:#58a6ff;">&#9432; Before you start</strong>
+          You need a GitHub account. If you don't have one, sign up free at
+          <strong>github.com</strong> then come back here. Your GitHub username will appear
+          in your public portfolio URL so choose it carefully.
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Steps to create the repo on github.com (do this in your browser):</span>
+<span class="comment"># 1. Log into github.com</span>
+<span class="comment"># 2. Click the + icon (top right) → "New repository"</span>
+<span class="comment"># 3. Repository name: portfolio</span>
+<span class="comment"># 4. Set visibility to: Public (required for free GitHub Pages)</span>
+<span class="comment"># 5. Do NOT tick "Add a README file"</span>
+<span class="comment"># 6. Click "Create repository"</span>
+<span class="comment"># 7. Copy the HTTPS URL shown — it will look like:</span>
+<span class="comment">#    https://github.com/YOUR-USERNAME/portfolio.git</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <p class="step-plain">
+          <strong>Part 2 — Connect Cloud Shell to GitHub</strong><br/>
+          GitHub requires authentication before you can push. The quickest way from Cloud Shell
+          is a Personal Access Token. Generate one in your browser first.
+        </p>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Generate a Personal Access Token on github.com:</span>
+<span class="comment"># 1. Click your profile photo (top right) → Settings</span>
+<span class="comment"># 2. Scroll to the bottom of the left sidebar → Developer settings</span>
+<span class="comment"># 3. Personal access tokens → Tokens (classic) → Generate new token (classic)</span>
+<span class="comment"># 4. Note: "Cloud Shell deploy"</span>
+<span class="comment"># 5. Expiration: 90 days (or No expiration for a portfolio)</span>
+<span class="comment"># 6. Tick the "repo" scope checkbox</span>
+<span class="comment"># 7. Click Generate token</span>
+<span class="comment"># 8. COPY THE TOKEN NOW — GitHub only shows it once</span>
+<span class="comment">#    It looks like: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <p class="step-plain">
+          <strong>Part 3 — Push your site to GitHub from Cloud Shell</strong><br/>
+          Run these commands in Cloud Shell. When Git asks for your password, paste your
+          Personal Access Token — not your GitHub password.
+        </p>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Navigate to the folder containing your index.html</span>
+<span class="cmd">cd</span> ~
+
+<span class="comment"># Create a new folder for your portfolio repo and move index.html into it</span>
+<span class="cmd">mkdir</span> portfolio
+<span class="cmd">cp</span> index.html portfolio/
+<span class="cmd">cd</span> portfolio
+
+<span class="comment"># Initialise Git in this folder</span>
+<span class="cmd">git</span> init
+<span class="cmd">git</span> branch <span class="flag">-M</span> main
+
+<span class="comment"># Set your Git identity (use the email registered on GitHub)</span>
+<span class="cmd">git</span> config user.name <span class="str">"Daniel Adeniran"</span>
+<span class="cmd">git</span> config user.email <span class="str">"your-email@example.com"</span>
+
+<span class="comment"># Connect to your GitHub repo (replace YOUR-USERNAME with your GitHub username)</span>
+<span class="cmd">git</span> remote add origin https://github.com/<span class="str">YOUR-USERNAME</span>/portfolio.git
+
+<span class="comment"># Stage and commit your file</span>
+<span class="cmd">git</span> add index.html
+<span class="cmd">git</span> commit <span class="flag">-m</span> <span class="str">"Initial portfolio site"</span>
+
+<span class="comment"># Push to GitHub (enter your GitHub username, then paste your token as password)</span>
+<span class="cmd">git</span> push <span class="flag">-u</span> origin main</pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Verify the push worked — your file should appear at:</span>
+<span class="comment"># https://github.com/YOUR-USERNAME/portfolio</span>
+
+<span class="comment"># Check your remote is set correctly</span>
+<span class="cmd">git</span> remote <span class="flag">-v</span>
+<span class="comment"># Expected:</span>
+<span class="comment"># origin  https://github.com/YOUR-USERNAME/portfolio.git (fetch)</span>
+<span class="comment"># origin  https://github.com/YOUR-USERNAME/portfolio.git (push)</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <p class="step-plain">
+          <strong>Part 4 — Enable GitHub Pages</strong><br/>
+          Do this in your browser once the push in Part 3 succeeds.
+        </p>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Enable GitHub Pages on github.com:</span>
+<span class="comment"># 1. Go to your repo: github.com/YOUR-USERNAME/portfolio</span>
+<span class="comment"># 2. Click the Settings tab (top of the repo)</span>
+<span class="comment"># 3. Scroll down the left sidebar → Pages</span>
+<span class="comment"># 4. Under "Branch" — select: main</span>
+<span class="comment"># 5. Folder: / (root)</span>
+<span class="comment"># 6. Click Save</span>
+<span class="comment"># 7. Wait ~60 seconds then visit your live site at:</span>
+<span class="comment">#    https://YOUR-USERNAME.github.io/portfolio</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <p class="step-plain">
+          <strong>Part 5 — Updating the site after future changes</strong><br/>
+          Every time you download an updated <code>index.html</code> from Claude, run both
+          commands below — one pushes to GCP, one pushes to GitHub. Both URLs stay in sync.
+        </p>
+
+        <div class="code-block-wrap">
+          <pre class="code-block"><span class="comment"># Copy the new file into your portfolio folder</span>
+<span class="cmd">cp</span> ~/index.html ~/portfolio/index.html
+<span class="cmd">cd</span> ~/portfolio
+
+<span class="comment"># Push to GitHub (updates GitHub Pages automatically)</span>
+<span class="cmd">git</span> add index.html
+<span class="cmd">git</span> commit <span class="flag">-m</span> <span class="str">"Update portfolio site"</span>
+<span class="cmd">git</span> push
+
+<span class="comment"># Push to GCP Cloud Storage (updates your GCP URL)</span>
+<span class="cmd">gsutil</span> cp index.html gs://<span class="str">daniel-adeniran-portfolio</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+
+        <div class="why-callout">
+          <strong>&#10003; Why both GitHub and GCP?</strong>
+          GitHub Pages gives you a clean shareable URL for LinkedIn and CVs. GCP Cloud Storage
+          keeps your site on infrastructure you control and already know. Git history means
+          every version of your portfolio is recoverable — useful as the site grows over time
+          with new projects, certs, and SQL or Python work.
+        </div>
+        <div class="step-actions">
+          <div class="step-notes-wrap">
+            <p class="step-notes-label">YOUR NOTES</p>
+            <textarea class="step-notes" data-step="step-8" placeholder="Paste your GitHub Pages URL and GitHub repo URL here once set up" oninput="saveNotes(this)"></textarea>
+          </div>
+          <button class="mark-complete-btn" data-step="step-8" onclick="toggleComplete('step-8')">
+            <span class="check-icon">&#9675;</span>
+            <span class="btn-label">Mark Complete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div><!-- /accordion -->
 </section>
 
@@ -1265,7 +1737,7 @@ EXPOSE 8080
 
 <script>
   // ── State ──────────────────────────────────────────────────────────────
-  const STEPS = ['step-1','step-2','step-3','step-4','step-5','step-6'];
+  const STEPS = ['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8'];
   let cardCounter = 3; // next card ID
 
   // ── localStorage helpers ───────────────────────────────────────────────
@@ -1510,9 +1982,105 @@ EXPOSE 8080
     updateProgress();
   }
 
+  // ── Certifications ────────────────────────────────────────────────────
+  let certCounter = 2;
+
+  function saveCertField(input) {
+    save(input.dataset.certKey, input.value);
+    syncCertCard(input.closest('.cert-card'));
+    showToast();
+  }
+
+  function syncCertCard(card) {
+    const g = key => card.querySelector(`[data-cert-key$="-${key}"]`);
+    const val = el => el ? el.value : '';
+
+    const name   = val(g('name'));
+    const issuer = val(g('issuer'));
+    const badge  = val(g('badge')) || issuer.slice(0,2).toUpperCase();
+    const date   = val(g('date'));
+    const credid = val(g('credid'));
+    const url    = val(g('url'));
+
+    const nameEl   = card.querySelector('.cert-name');
+    const issuerEl = card.querySelector('.cert-issuer');
+    const badgeEl  = card.querySelector('.cert-issuer-badge');
+    const dateEl   = card.querySelector('.cert-date');
+    const credEl   = card.querySelector('.cert-id');
+    const linkEl   = card.querySelector('.cert-verify');
+
+    if (nameEl)   nameEl.textContent   = name   || 'Certification Name';
+    if (issuerEl) issuerEl.textContent = issuer || 'Issuer';
+    if (badgeEl)  badgeEl.textContent  = badge;
+    if (dateEl)   dateEl.textContent   = date   ? 'Issued: ' + date : 'Issued: —';
+    if (credEl)   credEl.innerHTML     = `<span>Credential ID: </span>${credid || '—'}`;
+    if (linkEl)   linkEl.href          = url    || '#';
+  }
+
+  function addCertCard() {
+    const id = 'cert-' + certCounter++;
+    const grid = document.getElementById('certs-grid');
+    const placeholder = document.querySelector('[data-cert-id="cert-placeholder"]');
+    const div = document.createElement('div');
+    div.className = 'cert-card';
+    div.dataset.certId = id;
+    div.innerHTML = `
+      <button class="cert-delete" onclick="deleteCert('${id}')">&#215; Remove</button>
+      <div class="cert-card-top">
+        <div class="cert-issuer-badge">?</div>
+        <div class="cert-meta">
+          <p class="cert-name">Certification Name</p>
+          <p class="cert-issuer">Issuer</p>
+          <p class="cert-date">Issued: —</p>
+        </div>
+      </div>
+      <div class="cert-id"><span>Credential ID: </span>—</div>
+      <div class="cert-footer">
+        <a href="#" class="cert-verify" target="_blank" rel="noopener">Verify Credential →</a>
+        <span class="cert-badge-tag">&#10003; Verified</span>
+      </div>
+      <div class="cert-edit-fields">
+        <input class="cert-input" type="text" placeholder="Certification name" data-cert-key="${id}-name" value="" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Issuing organisation (e.g. Google)" data-cert-key="${id}-issuer" value="" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Badge abbreviation (e.g. GCP)" data-cert-key="${id}-badge" value="" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Issue date (e.g. Mar 2025)" data-cert-key="${id}-date" value="" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Credential ID" data-cert-key="${id}-credid" value="" oninput="saveCertField(this)" />
+        <input class="cert-input" type="text" placeholder="Verify URL (from share link)" data-cert-key="${id}-url" value="" oninput="saveCertField(this)" />
+      </div>`;
+    grid.insertBefore(div, placeholder);
+    saveCertList();
+    showToast();
+  }
+
+  function deleteCert(id) {
+    const card = document.querySelector(`[data-cert-id="${id}"]`);
+    if (card) {
+      card.style.transition = 'opacity 0.2s';
+      card.style.opacity = '0';
+      setTimeout(() => { card.remove(); saveCertList(); }, 200);
+    }
+  }
+
+  function saveCertList() {
+    const ids = Array.from(document.querySelectorAll('#certs-grid .cert-card'))
+      .map(c => c.dataset.certId).filter(id => id !== 'cert-placeholder');
+    save('cert-ids', ids);
+  }
+
+  function restoreCertFields() {
+    document.querySelectorAll('.cert-card[data-cert-id]').forEach(card => {
+      card.querySelectorAll('[data-cert-key]').forEach(input => {
+        const saved = load(input.dataset.certKey, null);
+        if (saved !== null) input.value = saved;
+      });
+      syncCertCard(card);
+    });
+  }
+
   // ── Init ───────────────────────────────────────────────────────────────
   document.getElementById('step-1').classList.add('open');
   restoreState();
+  restoreCertFields();
 </script>
 </body>
 </html>
